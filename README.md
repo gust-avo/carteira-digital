@@ -38,7 +38,7 @@ Variaveis principais:
 PORT=4000
 JWT_SECRET=troque-este-segredo
 DATABASE_URL=./data/carteira.sqlite
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:3000,http://127.0.0.1:3000
 ```
 
 Testes:

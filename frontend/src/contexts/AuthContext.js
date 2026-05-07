@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "../services/api";
 
@@ -22,41 +22,47 @@ export function AuthProvider({ children }) {
     setHydrated(true);
   }, []);
 
-  async function login(email, senha) {
-    const response = await api.post("/auth/login", { email, senha });
-    persistSession(response.data);
-    router.push("/dashboard");
-  }
-
-  async function register(payload) {
-    const response = await api.post("/auth/register", payload);
-    persistSession(response.data);
-    router.push("/dashboard");
-  }
-
-  function persistSession(data) {
+  const persistSession = useCallback((data) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
-  }
+  }, []);
 
-  function updateUser(nextUser) {
+  const login = useCallback(
+    async (email, senha) => {
+      const response = await api.post("/auth/login", { email, senha });
+      persistSession(response.data);
+      router.push("/dashboard");
+    },
+    [persistSession, router]
+  );
+
+  const register = useCallback(
+    async (payload) => {
+      const response = await api.post("/auth/register", payload);
+      persistSession(response.data);
+      router.push("/dashboard");
+    },
+    [persistSession, router]
+  );
+
+  const updateUser = useCallback((nextUser) => {
     localStorage.setItem("user", JSON.stringify(nextUser));
     setUser(nextUser);
-  }
+  }, []);
 
-  function logout() {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setToken(null);
     setUser(null);
     router.push("/");
-  }
+  }, [router]);
 
   const value = useMemo(
     () => ({ token, user, hydrated, login, register, logout, updateUser, isAuthenticated: Boolean(token) }),
-    [token, user, hydrated]
+    [token, user, hydrated, login, register, logout, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

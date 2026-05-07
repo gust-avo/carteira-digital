@@ -22,6 +22,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { CardConta } from "../components/CardConta";
+import { DashboardCharts } from "../components/DashboardCharts";
 import { EditUserDialog } from "../components/EditUserDialog";
 import { Extrato } from "../components/Extrato";
 import { ModalTransacao } from "../components/ModalTransacao";
@@ -157,19 +158,22 @@ export default function DashboardPage() {
           ) : contas.length === 0 ? (
             <Alert severity="info">Nenhuma conta cadastrada. Crie a primeira conta para comecar.</Alert>
           ) : (
-            <Grid container spacing={2}>
-              {contas.map((conta) => (
-                <Grid item xs={12} md={6} key={conta.id}>
-                  <CardConta
-                    conta={conta}
-                    onDeposit={(item) => setTransaction({ open: true, mode: "deposito", conta: item })}
-                    onWithdraw={(item) => setTransaction({ open: true, mode: "saque", conta: item })}
-                    onTransfer={(item) => setTransaction({ open: true, mode: "transferencia", conta: item })}
-                    onStatement={openStatement}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <Stack spacing={2}>
+              <DashboardCharts contas={contas} />
+              <Grid container spacing={2}>
+                {contas.map((conta) => (
+                  <Grid item xs={12} md={6} key={conta.id}>
+                    <CardConta
+                      conta={conta}
+                      onDeposit={(item) => setTransaction({ open: true, mode: "deposito", conta: item })}
+                      onWithdraw={(item) => setTransaction({ open: true, mode: "saque", conta: item })}
+                      onTransfer={(item) => setTransaction({ open: true, mode: "transferencia", conta: item })}
+                      onStatement={openStatement}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Stack>
           )}
         </Stack>
       </Container>

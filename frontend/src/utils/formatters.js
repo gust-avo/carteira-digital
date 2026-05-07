@@ -5,6 +5,15 @@ export function formatCurrency(value) {
   }).format(Number(value || 0));
 }
 
+export function formatCompactCurrency(value) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(Number(value || 0));
+}
+
 export function formatCpf(value) {
   const digits = String(value || "").replace(/\D/g, "").slice(0, 11);
   return digits

@@ -15,5 +15,13 @@ api.interceptors.request.use((config) => {
 });
 
 export function getApiError(error) {
-  return error?.response?.data?.message || "Nao foi possivel concluir a operacao.";
+  if (error?.response?.data?.message) {
+    return error.response.data.message;
+  }
+
+  if (error?.request) {
+    return "Nao foi possivel conectar a API. Confira se o backend esta rodando e se NEXT_PUBLIC_API_URL aponta para a porta correta.";
+  }
+
+  return "Nao foi possivel concluir a operacao.";
 }
